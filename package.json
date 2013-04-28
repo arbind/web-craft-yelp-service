@@ -1,4 +1,4 @@
-{ "name": "WebCraftYelpService"
+{ "name": "web-craft-yelp-service"
 , "author": "Arbind Thakur"
 , "description": "Yelp API client v2.0 implementation (with caching compliance)"
 , "version": "0.0.1"
