@@ -32,7 +32,7 @@ serviceSettings =
   debug: false
   resultsPerPage: 20
   adaptBiz: adaptBiz
-  xcacheConfig: cacheConfig
+  cacheConfig: cacheConfig
 
 # Example Usage for a webCraftYelpService
 runExamples = (webCraftYelpService)->
