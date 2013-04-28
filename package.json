@@ -1,0 +1,38 @@
+{ "name": "WebCraftYelpService"
+, "author": "Arbind Thakur"
+, "description": "Yelp API client v2.0 implementation (with caching compliance)"
+, "version": "0.0.1"
+, "repository":
+  { "type": "git"
+  , "url": "git@github.com:arbind/web-craft-yelp-service.git"
+  }
+, "keywords":
+  [ "yelp"
+  , "yelp api"
+  , "webcraft"
+  ]
+, "private": true
+, "scripts": 
+  { "test":  "cake spec"
+  }
+, "dependencies": 
+  { "coffee-script": ">=1.3"
+  , "json2": "*"
+  , "redis": "*"
+  , "redis-url": "*"
+  , "yelp": "*"
+  }
+, "devDependencies": 
+  { "mocha": "*"
+  , "chai": "*"
+  , "charlatan": "*"
+  , "chai-spies": "*"
+  , "sinon-chai": "*"
+  , "chai-factories":"*"
+  , "charlatan": "*"
+  }
+, "engines":
+  { "node": ">=0.8.12"
+  , "npm": ">=1.1.49"
+  }  
+}
