@@ -12,22 +12,22 @@ YelpSessionCache
     request to Yelp is required (return cached biz for performance, then update cache to keep it real-time )
 ###
 
-ERROR_NOT_CONNECTED = new Error 'Error: Yelp Session Cache Not Connected to redis!'
+ERROR_NOT_CONNECTED = new Error 'Yelp Session Cache Not Connected to redis!'
 
 class YelpSessionCache
   constructor: (@webcraftYelpService)->
 
   configure: (redisConfig, callback)=>
-    dbNumber = redisConfig.dbNumber ?= 0
+    @enabled = false    
     @prefix = redisConfig?.prefix ? 'wy.'
     @bizTTL = redisConfig?.bizTTL ? 5*60*60        # 5hrs : worst case expiration for a yelp biz, so it doesn't get stale
     @sessionTTL = redisConfig?.sessionTTL ? 60*60  # 1hr = 60s * 60m
+    dbNumber = redisConfig.dbNumber ?= 0
 
     redisTimeoutTimer = undefined
     reportConnectionFailure = ->
       clearTimeout redisTimeoutTimer
-      callback?(ERROR_NOT_CONNECTED)
-      console.log ERROR_NOT_CONNECTED unless callback?
+      console.log ERROR_NOT_CONNECTED
 
     redisTimeoutTimer = setTimeout reportConnectionFailure, 5000
 
@@ -37,6 +37,7 @@ class YelpSessionCache
       @redis = r
       @redis.send_anyways = true
       @redis.select dbNumber, (err, val) => 
+        @enabled = true
         @redis.send_anyways = false
         @redis.selectedDB = dbNumber
         console.log "Yelp Session Cache: connected to redis using db##{dbNumber}"
@@ -45,9 +46,11 @@ class YelpSessionCache
           @redis.keys '*', (err, keys)=>
             console.log "Yelp Session Cache: #{keys.length} redis keys"
 
-    r.on 'error', (args...)=>
-      console.log args...
+    @redisErrorCount = 0
+    r.on 'error', =>
+      @redisErrorCount = @redisErrorCount + 1
       reportConnectionFailure()
+      callback?(ERROR_NOT_CONNECTED) if 1 is @redisErrorCount
     @
 
   biz: (yelpId, sessionId, callback)=>

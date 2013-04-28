@@ -32,29 +32,33 @@ serviceSettings =
   debug: false
   resultsPerPage: 20
   adaptBiz: adaptBiz
-  cacheConfig: cacheConfig
+  xcacheConfig: cacheConfig
 
 # Example Usage for a webCraftYelpService
 runExamples = (webCraftYelpService)->
   console.log 'Running Examples'
 
-  webCraftYelpService.cache?.keyCount (err, results)->
-    showResults "Starting with key count:", err, results
-
-  webCraftYelpService.bizByName 'JFK Airport', 'New York, NY', (err, results)->
-    showResults 'bizByName', err, results
-
-  webCraftYelpService.bizById 'lax-los-angeles', (err, results)->
-    showResults 'bizById', err, results
-
-  webCraftYelpService.biz 'lax-los-angeles', 'sess-1', (err, results)->
-    showResults 'biz', err, results
-
-  exitAfter 10
+  startTime1 = Date.now()
+  webCraftYelpService.biz 'lax-los-angeles', 'sessionId-1', (err, results)->
+    duration = Date.now() - startTime1
+    showResults "biz (took #{duration}ms)", err, results
 
 # configure a webCraftYelpService and runExamples
 WebCraftYelpService.configure yelpOAuth, serviceSettings, (err, service)->
+  console.log 'First Run'
   runExamples(service)
+
+  # wait a couple seconds for results to come back and get cached, then run example again
+  setTimeout ( ->
+    console.log 'Second Run'
+    runExamples(service)
+    ), 2000
+
+  # quit after a while
+  setTimeout ( ->
+    console.log separatorBar, "done", separatorBar
+    process.exit(0) 
+    ), 5000
 
 # print out formatting
 spacer = '\n\n'
@@ -62,9 +66,5 @@ separatorBar = '\n-----------------------------------------\n'
 showResults = (forWhat, err, results)->
     console.log spacer
     console.log 'Error: ', err if err?
-    console.log "#{forWhat} Results:", separatorBar, results
-    console.log separatorBar
-
-exitAfter = (time)->
-  setTimeout ( ->console.log separatorBar, "done", separatorBar; process.exit(0) ), 1000*time
+    console.log separatorBar, results, separatorBar, "Results for ", forWhat, separatorBar
 

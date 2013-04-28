@@ -1,22 +1,6 @@
 YelpLib = require 'yelp'
 YelpSessionCache = require './yelp-session-cache'
 
-sortOutLastArgCallback = (lastArg, callback)->
-  return { lastArg, callback } if lastArg? and 'function' is typeof callback
-  callback = lastArg
-  lastArg = null
-  return { lastArg, callback } if 'function' is typeof callback
-  callback = null
-  { lastArg, callback }
-
-sortOutSessionIdCallback = (sessionId, callback)->
-  {lastArg, callback } = sortOutLastArgCallback sessionId, callback
-  { sessionId: lastArg, callback }
-
-sortOutPageCallback = (page, callback)->
-  {lastArg, callback } = sortOutLastArgCallback page, callback
-  { page: lastArg, callback }  
-
 class WebCraftYelpService
 
   configure: (@oauthConfig, { @adaptBiz, @resultsPerPage, cacheConfig, @debug }, callback)->
@@ -34,7 +18,6 @@ class WebCraftYelpService
       @cache.configure cacheConfig, (err, ok)=> 
         console.log 'cache configured: ', ok
         callback?(null, @)
-      # callback?(null, @)
     else
       callback?(null, @)
     @
@@ -44,7 +27,7 @@ class WebCraftYelpService
 
   biz: (yelpId, sessionId, callback)=>
     { sessionId, callback } = sortOutSessionIdCallback sessionId, callback
-    if sessionId? and @cache
+    if sessionId? and @cache?.enabled
       @cache.biz(yelpId, sessionId, callback)
     else 
       @bizById(yelpId, callback)
@@ -98,5 +81,24 @@ class WebCraftYelpService
 
 configure = (oauthConfig, redisConfig, options, callback)->
   (new WebCraftYelpService).configure(oauthConfig, redisConfig, options, callback)
+
+
+# some helper utils
+sortOutLastArgCallback = (lastArg, callback)->
+  return { lastArg, callback } if lastArg? and 'function' is typeof callback
+  callback = lastArg
+  lastArg = null
+  return { lastArg, callback } if 'function' is typeof callback
+  callback = null
+  { lastArg, callback }
+
+sortOutSessionIdCallback = (sessionId, callback)->
+  {lastArg, callback } = sortOutLastArgCallback sessionId, callback
+  { sessionId: lastArg, callback }
+
+sortOutPageCallback = (page, callback)->
+  {lastArg, callback } = sortOutLastArgCallback page, callback
+  { page: lastArg, callback }  
+
 
 module.exports = { configure }
