@@ -10,26 +10,26 @@ It optionally implements session cacheing as specified by the developer's agreem
 biz: (yelpId, sessionId, callback)=>
   # Returns a Yelp biz (from the session cache if possible)
   #
-  # yelpID: 
+  # yelpId: 
   #  id of the biz to fetch
   #
   # sessionId: 
   #  session token used to identify a  cache
   #
   #  callback:
-  #    The result is returned with a call to callback(err, biz)
+  #    result is returned by calling callback(err, biz)
   
 bizList: (yelpIdList, sessionId, callback)=>
   # Returns a biz array (from the session cache where possible)
   #
   # yelpIdList
-  #   is array of yelp ids to fetch
+  #   array of yelp ids to fetch
   #
   # sessionId: 
   #  session token used to identify a  cache
   #
   #  callback:
-  #    The results are returned with a call to callback(err, bizArray)
+  #    results are returned by calling callback(err, bizArray)
 
 bizById: (yelpId, callback)=>
   # Returns a Yelp biz from the Yelp API (doesn't check the cache at all)
@@ -38,7 +38,7 @@ bizById: (yelpId, callback)=>
   #  id of the biz to fetch
   #
   #  callback:
-  #    The result is returned with a call to callback(err, biz)
+  #    result is returned by calling callback(err, biz)
 
 bizByName: (name, location, callback) =>
   # Returns 1 Yelp biz from the Yelp API (doesn't check the cache at all)
@@ -50,7 +50,7 @@ bizByName: (name, location, callback) =>
   #  as specific an address as possible
   #
   #  callback:
-  #    The result is returned with a call to callback(err, biz)
+  #    result is returned by calling callback(err, biz)
   # 
   #  * A name match may result in multiple results
   #    this call returns the first match found, if any
@@ -72,7 +72,7 @@ search: (term, location, page, callback)=>
   #  page number of the result set to return
   #
   #  callback:
-  #    The result is returned with a call to callback(err, searchResults)
+  #    result is returned by calling callback(err, searchResults)
   #
   #  * information that Yelp return from a search may not contain 
   #    the same information that Yelp returns from a lookup by yelp ID
@@ -92,14 +92,17 @@ foreman run coffee example/example.coffee
 The basic usage looks like this:
 
 ````
-Yelp = require 'web-craft-yelp-service'
+YelpService = require 'web-craft-yelp-service'
 
 sessionID = '123'            # or request.sessionID
 yelpID = 'lax-los-angeles'   # or any real yelp ID
 
-Yelp.configure oAuth, settings, (err, yelp)->
-  yelp.biz yelpID, sessionID, (err, yelpCraft)->  
-    console.log yelpCraft
+yelp = YelpService.configure oAuth, settings
+
+# some time passes (redis connects, your server starts up, etc..)
+
+yelp.biz yelpID, sessionID, (err, yelpCraft)->  
+  console.log yelpCraft
 ````
 Of course, this is after you go through all the frigin configuration. Read on...
 
@@ -179,8 +182,8 @@ settings =
 sessionID = '123'            # or request.sessionID
 yelpID = 'lax-los-angeles'   # or any real yelp ID
 
-Yelp = require 'web-craft-yelp-service'
-Yelp.configure oAuth, settings, (err, yelp)->
+YelpService = require 'web-craft-yelp-service'
+YelpService.configure oAuth, settings, (err, yelp)->
   yelp.biz yelpID, sessionID, (err, yelpCraft)->  
     console.log yelpCraft
 
