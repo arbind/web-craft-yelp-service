@@ -7,7 +7,7 @@ It optionally implements session cacheing as specified by the developer's agreem
 
 ## API
 ```
-biz: (yelpId, sessionId, callback)=>
+fetch: (yelpId, sessionId, callback)=>
   # Returns a Yelp biz (from the session cache if possible)
   #
   # yelpId: 
@@ -101,7 +101,7 @@ yelp = YelpService.configure oAuth, settings
 
 # some time passes (redis connects, your server starts up, etc..)
 
-yelp.biz yelpID, sessionID, (err, yelpCraft)->  
+yelp.fetch yelpID, sessionID, (err, yelpCraft)->  
   console.log yelpCraft
 ````
 Of course, this is after you go through all the frigin configuration. Read on...
@@ -184,7 +184,7 @@ yelpID = 'lax-los-angeles'   # or any real yelp ID
 
 YelpService = require 'web-craft-yelp-service'
 YelpService.configure oAuth, settings, (err, yelp)->
-  yelp.biz yelpID, sessionID, (err, yelpCraft)->  
+  yelp.fetch yelpID, sessionID, (err, yelpCraft)->  
     console.log yelpCraft
 
 ```

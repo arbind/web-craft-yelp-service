@@ -1,7 +1,7 @@
-WebCraftYelpService = require '../index' # require 'web-craft-yelp'
+YelpService = require '../index' # require 'web-craft-yelp-service'
 
 # set up for your oauth token secret key
-yelpOAuth =
+oAuth =
   wsid: process.env.YELP_WSID
   consumer_key: process.env.YELP_CONSUMER_KEY
   consumer_secret: process.env.YELP_CONSUMER_SECRET
@@ -35,23 +35,23 @@ serviceSettings =
   cacheConfig: cacheConfig
 
 # Example Usage for a webCraftYelpService
-runExamples = (webCraftYelpService)->
+runExamples = (yelp)->
   console.log 'Running Examples:'
 
   startTime1 = Date.now()
-  webCraftYelpService.biz 'lax-los-angeles', 'sessionId-1', (err, results)->
+  yelp.fetch 'lax-los-angeles', 'sessionId-1', (err, results)->
     duration = Date.now() - startTime1
     showResults "biz (took #{duration}ms)", err, results
 
 # configure a webCraftYelpService and runExamples
-WebCraftYelpService.configure yelpOAuth, serviceSettings, (err, service)->
+YelpService.configure oAuth, serviceSettings, (err, yelp)->
   console.log 'First Run'
-  runExamples(service)
+  runExamples(yelp)
 
   # wait a couple seconds for results to come back and get cached, then run example again
   setTimeout ( ->
     console.log 'Second Run'
-    runExamples(service)
+    runExamples(yelp)
     ), 2000
 
   # quit after a while

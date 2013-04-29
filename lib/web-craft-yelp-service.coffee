@@ -22,14 +22,13 @@ class WebCraftYelpService
       callback?(null, @)
     @
 
-  # Finding a biz by its yelp-id will cache the biz for the session
-  # doesn't seem to work for yelpId with special chars: julios-café-austin-2
-
-  biz: (yelpId, sessionId, callback)=>
+  # Fetch a biz by its yelpId an cache it if session is given
+  fetch: (yelpId, sessionId, callback)=>
+    # doesn't seem to work for yelpId with special chars: julios-café-austin-2 !!
     { sessionId, callback } = sortOutSessionIdCallback sessionId, callback
     if sessionId? and @cache?.enabled
       @cache.biz(yelpId, sessionId, callback)
-    else 
+    else
       @bizById(yelpId, callback)
 
   # need to create a socket version of this to return each biz 1 at a time (asynchrounously) as they are retrieved
