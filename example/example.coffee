@@ -36,7 +36,7 @@ serviceSettings =
 
 # Example Usage for a webCraftYelpService
 runExamples = (webCraftYelpService)->
-  console.log 'Running Examples'
+  console.log 'Running Examples:'
 
   startTime1 = Date.now()
   webCraftYelpService.biz 'lax-los-angeles', 'sessionId-1', (err, results)->
@@ -64,7 +64,7 @@ WebCraftYelpService.configure yelpOAuth, serviceSettings, (err, service)->
 spacer = '\n\n'
 separatorBar = '\n-----------------------------------------\n'
 showResults = (forWhat, err, results)->
-    console.log spacer
     console.log 'Error: ', err if err?
     console.log separatorBar, results, separatorBar, "Results for ", forWhat, separatorBar
+    console.log spacer
 
