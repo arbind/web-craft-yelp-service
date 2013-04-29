@@ -5,6 +5,26 @@ Implements [YelpAPI 2.0 for Developers](http://www.yelp.com/developers/documenta
 #### This service fetches biz information using the yelp API.
 It optionally implements session cacheing as specified by the developer's agreement. 
 
+## Usage
+
+````
+YelpService = require 'web-craft-yelp-service'
+
+sessionID = '123'            # or request.sessionID
+yelpID = 'lax-los-angeles'   # or any real yelp ID
+
+# see configuration section for oAuth and settings
+oAuth = { … } 
+settings = { … }
+yelp = YelpService.configure oAuth, settings
+
+# some time passes (redis connects, your server starts up, etc..)
+
+yelp.fetch yelpID, sessionID, (err, yelpCraft)->  
+  console.log yelpCraft
+````
+Of course, this is after you go through all the frigin configuration (see below).
+
 ## API
 ```
 fetch: (yelpId, sessionId, callback)=>
@@ -80,31 +100,21 @@ search: (term, location, page, callback)=>
 
 ```
 
+## Run Specs
+Configure an .env file (see below) and run:
+
+```
+foreman run cake spec
+```
 
 
-## Example Usage
-Configure a .env file (see below) and run the example file with:
+## Run Example
+Configure an .env file (see below) and run:
 
 ```
 foreman run coffee example/example.coffee
 ```
-
-The basic usage looks like this:
-
-````
-YelpService = require 'web-craft-yelp-service'
-
-sessionID = '123'            # or request.sessionID
-yelpID = 'lax-los-angeles'   # or any real yelp ID
-
-yelp = YelpService.configure oAuth, settings
-
-# some time passes (redis connects, your server starts up, etc..)
-
-yelp.fetch yelpID, sessionID, (err, yelpCraft)->  
-  console.log yelpCraft
-````
-Of course, this is after you go through all the frigin configuration. Read on...
+Open example/example.coffee and have a look.
 
 
 ## Configure
@@ -206,7 +216,7 @@ foreman run coffee example/example.coffee
 3. &#10003; find list of biz fy yelpId
    * &#10003; Look up each one in cache
    * &#10003; Fetch each one from Yelp and cache it, otherwise
-   * &Xi; parallelize each lookup (it's an optimization)
+   * &Xi; parallelize each lookup (optimize to use redis mget and then async)
 4. &#10003; find biz by name and location
    * &#10003; returns 1 biz (the first one matched)
 5. &#10003; search for businesses by term and location

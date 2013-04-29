@@ -16,7 +16,6 @@ class WebCraftYelpService
       cacheConfig.debug ?= @debug
       @cache = new YelpSessionCache @
       @cache.configure cacheConfig, (err, ok)=> 
-        console.log 'cache configured: ', ok
         callback?(null, @)
     else
       callback?(null, @)
@@ -84,12 +83,10 @@ configure = (oauthConfig, redisConfig, options, callback)->
 
 # some helper utils
 sortOutLastArgCallback = (lastArg, callback)->
-  return { lastArg, callback } if lastArg? and 'function' is typeof callback
+  return { lastArg, callback } if callback?
   callback = lastArg
-  lastArg = null
-  return { lastArg, callback } if 'function' is typeof callback
-  callback = null
-  { lastArg, callback }
+  lastArg = undefined
+  return { lastArg, callback }
 
 sortOutSessionIdCallback = (sessionId, callback)->
   {lastArg, callback } = sortOutLastArgCallback sessionId, callback

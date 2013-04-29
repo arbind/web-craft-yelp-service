@@ -1,5 +1,7 @@
 YelpService = require '../index' # require 'web-craft-yelp-service'
 
+yelpId = 'lax-los-angeles'
+
 # set up for your oauth token secret key
 oAuth =
   wsid: process.env.YELP_WSID
@@ -39,7 +41,7 @@ runExamples = (yelp)->
   console.log 'Running Examples:'
 
   startTime1 = Date.now()
-  yelp.fetch 'lax-los-angeles', 'sessionId-1', (err, results)->
+  yelp.fetch yelpId, 'sessionId-1', (err, results)->
     duration = Date.now() - startTime1
     showResults "biz (took #{duration}ms)", err, results
 

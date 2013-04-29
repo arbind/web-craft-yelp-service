@@ -88,10 +88,10 @@ class YelpSessionCache
       else 
         callback?(null, ok)
 
-  clear: (calllback)=>
+  clear: (callback)=>
     throw ERROR_NOT_CONNECTED unless @redis
     @redis.keys '*', (err, keys)=>
-      redis.del key for key in keys
+      @redis.del key for key in keys
       callback?(null, keys.length)
 
   keyCount: (callback)=>
