@@ -1,6 +1,6 @@
 { "name": "web-craft-yelp-service"
 , "author": "Arbind Thakur"
-, "description": "Yelp API client v2.0 implementation (with caching compliance)"
+, "description": "Yelp API client v2.0 WebCraft Service implementation (with caching compliance)"
 , "version": "0.0.1"
 , "repository":
   { "type": "git"
@@ -10,10 +10,12 @@
   [ "yelp"
   , "yelp api"
   , "webcraft"
+  , "craft"
   ]
 , "private": true
 , "scripts": 
-  { "test":  "cake spec"
+  { "start": "foreman run coffee example/example.coffee"
+  , "test":  "cake spec"
   }
 , "dependencies": 
   { "coffee-script": ">=1.3"
