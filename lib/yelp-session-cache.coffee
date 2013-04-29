@@ -66,11 +66,11 @@ class YelpSessionCache
           if 0 isnt alreadyExists # biz is already in session
             @redis.expire sessionId, @sessionTTL # refresh session lifetime
           else # biz is not yet in session
-            @webcraftYelpService.bizById yelpId, (err, yelpBiz)=> # issue request to yelp
+            @webcraftYelpService.fetchById yelpId, (err, yelpBiz)=> # issue request to yelp
               return if err?
               @store yelpId, yelpBiz, sessionId
       else # biz is not in cache
-        @webcraftYelpService.bizById yelpId, (err, yelpBiz)=> # issue request to yelp
+        @webcraftYelpService.fetchById yelpId, (err, yelpBiz)=> # issue request to yelp
           callback(err, yelpBiz) # make the biz available as soon as possible
           return if err?
           @store yelpId, yelpBiz, sessionId

@@ -2,8 +2,46 @@
 Implements [YelpAPI 2.0 for Developers](http://www.yelp.com/developers/documentation/faq)
 
 ## Overview
-#### This service fetches biz information using the yelp API.
-It optionally implements session cacheing as specified by the developer's agreement. 
+#### The Web Craft Yelp Service fetches biz info using the yelp API.
+Includes option for session cacheing (as specified by Yelp's developer agreement).
+
+## &#10003; Status
+Primary. Functional. Complete. Stable. Production Ready.
+
+1. &#10003; fetch biz (by yelpId)
+   * &#10003; retrieve from session cache if present
+   * &#10003; fetch biz from Yelp and cache it, otherwise
+   * &#10003; adapt the result to return only the desired attributes
+2. &#10003; session cache for biz (by yelpId) (redis)
+   * &#10003; new session always issues request to Yelp API   
+   * &#10003; expire session after 60 min
+   * &#10003; conform to yelp api developer's agreement in general
+3. &#10003; fetchList: find list of biz (by array of yelpIds)
+   * &#10003; Look up each one in cache
+   * &#10003; Fetch each one from Yelp and cache it, otherwise
+   * &Xi; parallelize each fetch (optimize to use redis mget and then async)
+4. &#10003; fetchById: find biz (by yelpId)
+   * &#10003; returns 1 biz (if found) and does not do any cacheing
+5. &#10003; fetchByName: find biz (by name and location)
+   * &#10003; returns 1 biz (the first one matched)
+6. &#10003; search for businesses (by term and location)
+   * &#10003; returns 20 businesses per page
+7. &#10003; specs
+   * &Xi; specs for API
+     * &#10003; fetch (primary)
+     * &Xi; fetchList (secondary)
+     * &Xi; fetchById (secondary)
+     * &Xi; fetchByName (secondary)
+     * &Xi; search (secondary)
+   * &#10003; specs for cacheing
+   
+**Key**
+
+&#10003; Complete
+
+&hearts; In Progres
+
+&Xi; ToDo
 
 ## Usage
 
@@ -101,12 +139,14 @@ search: (term, location, page, callback)=>
 ```
 
 ## Run Specs
-Configure an .env file (see below) and run:
+The specs make real calls to Yelp, to ensure that the service really works.
+If Yelp ever changes their API, the specs should break accordingly.
+
+To run the specs, configure an .env file (see Configure section below) and execute:
 
 ```
 foreman run cake spec
 ```
-
 
 ## Run Example
 Configure an .env file (see below) and run:
@@ -128,9 +168,10 @@ Open example/example.coffee and have a look.
 ### 1. Define environment variables (one way to do it)
 ```
 cp .env.template .env
+touch Procfile
 ```
 
-edit .env file to include your [oauth tokens](http://www.yelp.com/developers/manage_api_keys)
+Modify the .env file to include your [yelp developer's oauth tokens](http://www.yelp.com/developers/manage_api_keys)
 
 ```
 YELP_WSID=your_wsid
@@ -204,35 +245,6 @@ YelpService.configure oAuth, settings, (err, yelp)->
 ````
 foreman run coffee example/example.coffee
 ````
-### &#10003; Status
-1. &#10003; find biz by yelpId
-   * &#10003; retrieve from session cache if present
-   * &#10003; fetch biz from Yelp and cache it, otherwise
-   * &#10003; adapt the result to return only the desired attributes
-2. &#10003; session cache for biz (by yelpId) (redis)
-   * &#10003; new session always issues request to Yelp API   
-   * &#10003; expire session after 60 min
-   * &#10003; conform to yelp api developer's agreement in general
-3. &#10003; find list of biz fy yelpId
-   * &#10003; Look up each one in cache
-   * &#10003; Fetch each one from Yelp and cache it, otherwise
-   * &Xi; parallelize each lookup (optimize to use redis mget and then async)
-4. &#10003; find biz by name and location
-   * &#10003; returns 1 biz (the first one matched)
-5. &#10003; search for businesses by term and location
-   * &#10003; returns 20 businesses per page
-6. &Xi; specs
-   * &Xi; specs for API
-   * &Xi; specs for cacheing
 
 ### &Xi; TO DO
-+ &Xi; write tests
-+ &Xi; explore inerface accepting a socket instead of a callback
-
-> **Key**
-
-> &#10003; Complete
-
-> &hearts; In Progres
-
-> &Xi; ToDo
++ &Xi; explore an interface that accepts a socket to return results to instead of a callback

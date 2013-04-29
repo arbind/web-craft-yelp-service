@@ -28,25 +28,25 @@ class WebCraftYelpService
     if sessionId? and @cache?.enabled
       @cache.biz(yelpId, sessionId, callback)
     else
-      @bizById(yelpId, callback)
+      @fetchById(yelpId, callback)
 
   # need to create a socket version of this to return each biz 1 at a time (asynchrounously) as they are retrieved
-  bizList: (yelpIdList, sessionId, callback)=>
+  fetchList: (yelpIdList, sessionId, callback)=>
     { sessionId, callback } = sortOutSessionIdCallback sessionId, callback
     list = []
     for yelpId in yelpIdList
-      @biz yelpId, sessionId, (err, biz)=>
+      @fetch yelpId, sessionId, (err, biz)=>
         list.push (biz || { err })
         callback(null, list) if list.length is yelpIdList.length
 
   # Yelp API Accessors
-  bizById: (yelpId, callback)=>
+  fetchById: (yelpId, callback)=>
     @YelpLibClient.business yelpId, (err, yelpBiz)=>
       return callback(err) if err?
       adaptedBiz = @adaptBiz yelpBiz
       callback(err, adaptedBiz)
 
-  bizByName: (name, location, callback) =>
+  fetchByName: (name, location, callback) =>
     searchQuery = 
       term:     name
       location: location
